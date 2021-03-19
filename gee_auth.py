@@ -139,15 +139,7 @@ class GEE_auth_Plugin():
     code_verifier = self._base64param(os.urandom(32))
     code_challenge = self._base64param(hashlib.sha256(code_verifier).digest())
     auth_url = self.get_authorization_url(code_challenge)
-    text = 'To authorize access needed by Earth Engine, open the following '
-        'URL in a web browser and follow the instructions. If the web '
-        'browser does not start automatically, please manually browse the '
-        'URL below.\n'
-        '\n'
-        '    {0}\n'
-        '\n'
-        'The authorization workflow will generate a code, which you '
-        'should paste in the box below. '.format(auth_url))
+    text = 'To authorize access needed by Earth Engine, open the following URL in a web browser and follow the instructions. If the web browser does not start automatically, please manually browse the URL below.\n\n{0}\n\nThe authorization workflow will generate a code, which you should paste in the box below.'.format(auth_url)
 
     dlg.label.setPlainText(text)
 
