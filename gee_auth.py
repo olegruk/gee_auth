@@ -5,32 +5,27 @@
 # *   it under the terms of the GNU General Public License as published by  *
 # *   the Free Software Foundation; either version 2 of the License, or     *
 # *   (at your option) any later version.                                   *
+# *   It based on Google Earth Engine plugin by Gennadii Donchyts.          *
 # *                                                                         *
 # ***************************************************************************
 
-#import os.path
-#from qgis.PyQt.QtCore import *
-#from qgis.PyQt.QtGui import *
 from qgis.PyQt.QtWidgets import *
 from qgis.PyQt import uic
-#from qgis.core import Qgis
 from qgis.PyQt.QtWidgets import QAction
 from qgis.PyQt.QtGui import QIcon
 
+from qgis.core import Qgis
+
 import base64
-#import datetime
 import errno
 import hashlib
 import json
 import os
-#import sys
 import webbrowser
 import six
-#from six.moves import input
 from six.moves.urllib import parse
 from six.moves.urllib import request
 from six.moves.urllib.error import HTTPError
-
 
 Ui_authDialogBase = uic.loadUiType(os.path.join(os.path.dirname(__file__), 'gee_auth.ui'))[0]
 CLIENT_ID = ('517222506229-vsmmajv00ul0bs7p89v5m89qs8eb9359.'
@@ -40,7 +35,7 @@ SCOPES = [
     'https://www.googleapis.com/auth/earthengine',
     'https://www.googleapis.com/auth/devstorage.full_control'
 ]
-REDIRECT_URI = 'urn:ietf:wg:oauth:2.0:oob'  # Prompts user to copy-paste code
+REDIRECT_URI = 'urn:ietf:wg:oauth:2.0:oob'
 TOKEN_URI = 'https://accounts.google.com/o/oauth2/token'
 
 class authDialog (QDialog, Ui_authDialogBase):
@@ -52,23 +47,17 @@ class authDialog (QDialog, Ui_authDialogBase):
 class GEE_auth_Plugin():
   def __init__(self, iface):
     self.iface = iface
-    #self.toolButton = QToolButton()
-    #self.toolButton.setMenu(QMenu())
-    #self.toolButton.setPopupMode(QToolButton.MenuButtonPopup)
-    #self.toolBtnAction = self.iface.addToolBarWidget(self.toolButton)
+
 
   def initGui(self):
     icon = QIcon(os.path.join(os.path.dirname(__file__), "gee_auth.png"))
     self.authAction = QAction(icon, 'Authenticate GEE', self.iface.mainWindow())
-    #self.iface.registerMainWindowAction(self.authAction, "Shift+F5")
-    #self.authAction.setToolTip('Authenticate Google Earth engine')
     self.iface.addPluginToMenu('Google Earth Engine Plugin', self.authAction)
     self.authAction.triggered.connect(self.authRun)
 
   def unload(self):
     self.iface.removePluginMenu('Google Earth Engine Plugin', self.authAction)
     self.iface.unregisterMainWindowAction(self.authAction)
-    #self.iface.removeToolBarIcon(self.toolBtnAction)
 
   def authRun(self):
     code_verifier = base64.urlsafe_b64encode(os.urandom(32)).rstrip(b'=')
@@ -88,6 +77,7 @@ class GEE_auth_Plugin():
     assert isinstance(auth_code, six.string_types)
     token = self.request_token(auth_code.strip(), code_verifier)
     self.write_token(token)
+    self.iface.messageBar().pushMessage("", "Authentication process completed successfully.", level=Qgis.Info, duration=4)
 
   def get_authorization_url(self, code_challenge):
     """Returns a URL to generate an auth code."""
@@ -144,7 +134,6 @@ class GEE_auth_Plugin():
 
     file_content = json.dumps({'refresh_token': refresh_token})
     if os.path.exists(credentials_path):
-      # Remove file because os.open will not change permissions of existing files
       os.remove(credentials_path)
     with os.fdopen(
         os.open(credentials_path, os.O_WRONLY | os.O_CREAT, 0o600), 'w') as f:

@@ -1,29 +1,25 @@
-# This file contains metadata for your plugin. Beginning
-# with version 1.8 this is the preferred way to supply information about a
-# plugin. The current method of embedding metadata in __init__.py will
-# be supported until version 2.0
-
-# This file should be included when you package your plugin.
-
-# Mandatory items:
-
-
 [general]
 name=Google Earth Engine Authenticator
 qgisMinimumVersion=3.0
-description=Helps to authenticate the Google earth engine plugin
-about=This tool is only useful for thouse? who use a Google earth engine plugin!
-version=0.0.1
-
-# Optional items:
-
-icon=gee_auth.png
-
-experimental=False
-
-# deprecated flag (applies to the whole plugin, not just a single version
-deprecated=False
-
-# Author contact information
-author=R.
+description=This plugin helps to authenticate the Google earth engine plugin
+about=This tool is only useful for thouse, who use a Google earth engine plugin!
+version=0.0.2
+author=Oleg R.
 email=olegaruk@yandex.ru
+
+#changelog=
+#experimental=False
+#deprecated=False
+tags=google earth engine
+
+homepage=https://github.com/olegruk/gee_auth
+repository=https://github.com/olegruk/gee_auth
+tracker=https://github.com/olegruk/gee_auth/issues
+icon=gee_auth.png
+category=Raster
+plugin_dependencies=Google Earth Engine==0.0.3
+server=False
+hasProcessingProvider=no
+
+
+
